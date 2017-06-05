@@ -18,7 +18,7 @@ fn is_numric_value(t: &Term) -> bool {
     }
 }
 
-fn eval_1step(t: Term) -> Result<Term, (&'static str, Term)> {
+fn eval_1step(t: Term) -> Result<Term, &'static str> {
     use self::Term::*;
     match t {
         If(box True, box t, _) => Ok(t),
@@ -43,14 +43,14 @@ fn eval_1step(t: Term) -> Result<Term, (&'static str, Term)> {
             let t = box eval_1step(t)?;
             Ok(IsZero(t))
         },
-        t => Err(("Wrong", t))
+        _ => Err("Wrong")
     }
 }
 
 pub fn eval(t: Term) -> Term {
     match eval_1step(t.clone()) {
         Ok(t) => eval(t),
-        Err((_, _)) => t
+        Err(_) => t
     }
 }
 
